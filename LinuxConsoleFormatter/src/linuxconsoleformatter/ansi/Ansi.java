@@ -42,7 +42,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi attribute(AnsiAttribute a) {
-    appendFormat(a.value());
+    if (a != null) {
+      appendFormat(a.value());
+    }
     return this;
   }
 
@@ -83,7 +85,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi fg(AnsiColor c) {
-    appendFormat(c.fg());
+    if (c != null) {
+      appendFormat(c.fg());
+    }
     return this;
   }
 
@@ -94,7 +98,9 @@ public class Ansi {
    * @return
    */
   public Ansi bg(AnsiColor c) {
-    appendFormat(c.bg());
+    if (c != null) {
+      appendFormat(c.bg());
+    }
     return this;
   }
 
@@ -105,7 +111,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi fgBright(AnsiColor c) {
-    appendFormat(c.fgBright());
+    if (c != null) {
+      appendFormat(c.fgBright());
+    }
     return this;
   }
 
@@ -116,7 +124,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi bgBright(AnsiColor c) {
-    appendFormat(c.bgBright());
+    if (c != null) {
+      appendFormat(c.bgBright());
+    }
     return this;
   }
 
@@ -127,7 +137,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi fgColor(javafx.scene.paint.Color c) {
-    extColor24bit(c, AnsiColorType.FOREGROUND);
+    if (c != null) {
+      extColor24bit(c, AnsiColorType.FOREGROUND);
+    }
     return this;
   }
 
@@ -138,7 +150,9 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi bgColor(javafx.scene.paint.Color c) {
-    extColor24bit(c, AnsiColorType.BACKGROUND);
+    if (c != null) {
+      extColor24bit(c, AnsiColorType.BACKGROUND);
+    }
     return this;
   }
 
@@ -150,11 +164,13 @@ public class Ansi {
    * @return the Ansi with appended text.
    */
   public Ansi extColor24bit(javafx.scene.paint.Color c, AnsiColorType type) {
-    appendFormat(type.getType(),
-            AnsiColorExtendedType.C24BIT.getType(),
-            (int) (c.getRed() * 255),
-            (int) (c.getGreen() * 255),
-            (int) (c.getBlue() * 255));
+    if (c != null && type != null) {
+      appendFormat(type.getType(),
+              AnsiColorExtendedType.C24BIT.getType(),
+              (int) (c.getRed() * 255),
+              (int) (c.getGreen() * 255),
+              (int) (c.getBlue() * 255));
+    }
     return this;
   }
 
@@ -168,9 +184,11 @@ public class Ansi {
    */
   public Ansi extColor8bit(int c, AnsiColorType type) throws Exception {
     c = (Math.abs(c) & 0xFF);
-    appendFormat(type.getType(),
-            AnsiColorExtendedType.C8BIT.getType(),
-            c);
+    if (type != null) {
+      appendFormat(type.getType(),
+              AnsiColorExtendedType.C8BIT.getType(),
+              c);
+    }
     return this;
   }
 
@@ -217,7 +235,9 @@ public class Ansi {
   }
 
   private void appendFormat(Integer... format) {
-    appendFormat(FXCollections.observableArrayList(format));
+    if (format != null) {
+      appendFormat(FXCollections.observableArrayList(format));
+    }
   }
 
   private void appendFormat(ObservableList<Integer> format) {
