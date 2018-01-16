@@ -9,7 +9,7 @@ package linuxconsoleformatter.ansi;
  *
  * @author root
  */
-public enum Color {
+public enum AnsiColor {
   BLACK(0, "BLACK"),
   RED(1, "RED"),
   GREEN(2, "GREEN"),
@@ -23,7 +23,7 @@ public enum Color {
   private final int value;
   private final String name;
 
-  Color(int index, String name) {
+  AnsiColor(int index, String name) {
     this.value = index;
     this.name = name;
   }

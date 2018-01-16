@@ -9,7 +9,7 @@ package linuxconsoleformatter.ansi;
  *
  * @author root
  */
-public enum Attribute {
+public enum AnsiAttribute {
   RESET(0, "RESET"),
   INTENSITY_BOLD(1, "INTENSITY_BOLD"),
   INTENSITY_FAINT(2, "INTENSITY_FAINT"),
@@ -32,7 +32,7 @@ public enum Attribute {
   private final int value;
   private final String name;
 
-  Attribute(int index, String name) {
+  AnsiAttribute(int index, String name) {
     this.value = index;
     this.name = name;
   }
