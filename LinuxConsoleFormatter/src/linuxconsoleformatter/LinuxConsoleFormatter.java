@@ -7,8 +7,11 @@ package linuxconsoleformatter;
 
 import javafx.scene.paint.Color;
 import linuxconsoleformatter.ansi.Ansi;
-import linuxconsoleformatter.ansi.AnsiAttribute;
-import linuxconsoleformatter.ansi.AnsiColorType;
+import static linuxconsoleformatter.ansi.Ansi.print;
+import static linuxconsoleformatter.ansi.Ansi.println;
+import linuxconsoleformatter.ansi.format.AnsiAttribute;
+import linuxconsoleformatter.ansi.format.AnsiColor;
+import linuxconsoleformatter.ansi.format.AnsiColorType;
 
 /**
  *
@@ -21,9 +24,35 @@ public class LinuxConsoleFormatter {
    * @throws java.lang.Exception
    */
   public static void main(String[] args) throws Exception {
-    System.out.println(Ansi.ansi().fgColor(Color.ROSYBROWN).bgColor(Color.CYAN).attribute(AnsiAttribute.INTENSITY_BOLD).a("e_ciao").reset().toString());
-    System.out.println(Ansi.ansi().bgBright(linuxconsoleformatter.ansi.AnsiColor.GREEN).attribute(AnsiAttribute.ITALIC).a("i_ciao").reset().toString());
-    System.out.println(Ansi.ansi().extColor8bit(0, AnsiColorType.FOREGROUND).a("8_ciao").reset().toString());
+    print(Ansi.ansi().resetTTY());
+
+    println(Ansi.ansi().format().fgColor(Color.ROSYBROWN).format().bgColor(Color.CYAN).format().attribute(AnsiAttribute.INTENSITY_BOLD).a("RESET TTY").format().reset());
+
+    println(Ansi.ansi().format().bgBright(linuxconsoleformatter.ansi.format.AnsiColor.GREEN).format().attribute(AnsiAttribute.ITALIC).a("TEST 1 FORMAT").format().reset());
+
+    println(Ansi.ansi().format().extColor8bit(0, AnsiColorType.FOREGROUND).a("TEST 2 FORMAT").format().reset());
+
+    double progress;
+    final int bar = 10;
+
+    print(Ansi.ansi().a("PROGRESS: "));
+    for (int i = 0; i < 100; i++) {
+      progress = i;
+      println(Ansi.ansi().cursor().save().a(progress).a("%"));
+      int k = i + 1;
+      int p = (int) Math.floor((double) k / (double) bar);
+      print(Ansi.ansi().a("["));
+      for (int j = 0; j < bar; j++) {
+        if (j < p) {
+          print(Ansi.ansi().a("#"));
+        } else {
+          print(Ansi.ansi().a("-"));
+        }
+      }
+      print(Ansi.ansi().a("]").cursor().load());
+      Thread.sleep(100);
+    }
+    println(Ansi.ansi().cursor().load().format().bgBright(AnsiColor.RED).a("COMPLETED!").format().reset().nl().erase().eraseLine());
   }
 
 }
