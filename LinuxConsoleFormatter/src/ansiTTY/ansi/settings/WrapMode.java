@@ -3,26 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package linuxconsoleformatter.ansi.cursor;
+package ansiTTY.ansi.settings;
 
 /**
  *
  * @author root
  */
-public enum AnsiCursor {
-  HOME('H'),
-  UP('A'),
-  DOWN('B'),
-  FORWARD('C'),
-  BACKWARD('D'),
-  FORCE('f'),
-  SAVE('s'),
-  LOAD('u');
+public enum WrapMode {
+  ON(7, 'l'),
+  OFF(7, 'h');
 
+  private final int code;
   private final char end;
 
-  private AnsiCursor(char end) {
+  private WrapMode(int code, char end) {
+    this.code = code;
     this.end = end;
+  }
+
+  public int getCode() {
+    return code;
   }
 
   public char getEnd() {

@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package linuxconsoleformatter.ansi.format;
+package ansiTTY.ansi.format;
 
 /**
  *
  * @author root
  */
-public enum AnsiColorType {
-  FOREGROUND(38),
-  BACKGROUND(48);
+public enum AnsiColorExtendedType {
+  C8BIT(5),
+  C24BIT(2);
 
   private final int type;
 
-  private AnsiColorType(int type) {
+  private AnsiColorExtendedType(int type) {
     this.type = type;
   }
 
