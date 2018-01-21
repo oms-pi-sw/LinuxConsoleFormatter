@@ -1,2 +1,3 @@
 # LinuxConsoleFormatter
-A simple linux console text formatter
+
+A simple ANSI TTY formatter for Java.
