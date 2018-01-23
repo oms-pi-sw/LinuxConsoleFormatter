@@ -563,6 +563,7 @@ public class Ansi {
    *
    * @param value the string to parse.
    * @return the Ansi with appended text.
+   * @throws java.lang.Exception the exception.
    */
   public Ansi parse(String value) throws Exception {
     if (occurencesCounter(value, START) != occurencesCounter(value, END)) {
