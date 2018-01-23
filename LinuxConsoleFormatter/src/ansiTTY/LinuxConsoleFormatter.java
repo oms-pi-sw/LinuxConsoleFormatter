@@ -20,12 +20,7 @@ import ansiTTY.utils.Utility;
  */
 public class LinuxConsoleFormatter {
 
-  /**
-   * @param args the command line arguments
-   * @throws Exception the generic exception.
-   *
-   */
-  public static void main(String[] args) throws Exception {
+  private static void test() throws Exception {
     print(Ansi.ansi().resetTTY());
 
     println(Ansi.ansi().format().fgColor(Color.ROSYBROWN).format().bgColor(Color.CYAN).format().attribute(AnsiAttribute.INTENSITY_BOLD).a("RESET TTY").format().reset());
@@ -33,6 +28,8 @@ public class LinuxConsoleFormatter {
     println(Ansi.ansi().format().bgBright(ansiTTY.ansi.format.AnsiColor.GREEN).format().attribute(AnsiAttribute.ITALIC).a("TEST 1 FORMAT").format().reset());
 
     println(Ansi.ansi().format().extColor8bit(0, AnsiColorType.FOREGROUND).a("TEST 2 FORMAT").format().reset());
+
+    println(Ansi.ansi().parse("@{f:red FG_ROSSO}@ NON FORMATTATO @{f:rgb(255,0,0,bg) BG_ROSSO}@"));
 
     println();
 
@@ -70,6 +67,20 @@ public class LinuxConsoleFormatter {
     }
     Thread.sleep(500);
     Utility.endProgressBar(Ansi.ansi().format().bg(AnsiColor.RED).a("COMPLETED!").format().reset());
+  }
+
+  /**
+   * @param args the command line arguments
+   * @throws Exception the generic exception.
+   *
+   */
+  public static void main(String[] args) throws Exception {
+//    println(Ansi.ansi().parse("prova @{f:green ciao}@ @{f:bg_yellow,blue wella!}@ wei! @{f:rgb(128;99;46;bg),rgb(255;120;120) rgb}@"));
+    if (args.length == 0) {
+      test();
+    } else {
+      println(Ansi.ansi().parse(args[0]));
+    }
   }
 
 }

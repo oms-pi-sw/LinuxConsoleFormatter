@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import ansiTTY.ansi.cursor.AnsiCursor;
 import ansiTTY.ansi.erase.EraseMode;
 import ansiTTY.ansi.settings.WrapMode;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -538,6 +539,137 @@ public class Ansi {
   public Ansi a(String value) {
     ansi.append(value);
     return this;
+  }
+
+  private static final String START = "@{";
+  private static final String END = "}@";
+
+  private static final String FORMAT_N = "f";
+  private static final String CURSOR_N = "f";
+  private static final String ERASE_N = "e";
+
+  private static final String RGB = "rgb";
+
+  private static final String ARG_S = "(";
+  private static final String ARG_E = ")";
+
+  private static final String CODE_SEP = ",";
+  private static final String RGB_SEP = ";";
+  private static final String MANIPULATOR_SEP = ":";
+  private static final String TEXT_SEP = " ";
+
+  /**
+   * Parse the input string.
+   *
+   * @param value the string to parse.
+   * @return the Ansi with appended text.
+   */
+  public Ansi parse(String value) throws Exception {
+    if (occurencesCounter(value, START) != occurencesCounter(value, END)) {
+      throw new Exception("PARSE ERROR");
+    }
+    while (true) {
+      int first_token = value.indexOf(START);
+      int sub_str_start;
+      a(value.substring(0, (sub_str_start = (first_token >= 0 ? first_token : (value.length())))));
+      value = value.substring(first_token >= 0 ? sub_str_start + START.length() : value.length());
+      if (value.isEmpty()) {
+        break;
+      } else if (first_token >= 0) {
+        int man_len;
+        if (value.substring(0, (man_len = FORMAT_N.length() + MANIPULATOR_SEP.length())).equals(FORMAT_N + MANIPULATOR_SEP)) {
+          //FORMAT
+          //REMOVE "f:"
+          value = value.substring(man_len);
+          int command_indexof = value.indexOf(TEXT_SEP);
+
+          //SEPARATE COMMAND
+          String command = value.substring(0, command_indexof);
+
+          //FIND FIRST END
+          value = value.substring(command_indexof + TEXT_SEP.length());
+          int first_indexof_end = value.indexOf(END);
+
+          //SEPARATE FORMATTED TEXT TO APPEND
+          String text = value.substring(0, first_indexof_end);
+          value = value.substring(first_indexof_end + END.length());
+
+          String[] commands = command.split(CODE_SEP);
+          for (String c : commands) {
+            if (c.startsWith(RGB)) {
+              c = c.substring(RGB.length());
+              try {
+                c = c.substring(ARG_S.length(), c.length() - ARG_E.length());
+              } catch (Exception ex) {
+                throw new Exception("PARSE ERROR");
+              }
+              String[] rgb_values = c.split(RGB_SEP);
+              boolean fg = true;
+              switch (rgb_values.length) {
+                case 3:
+                  break;
+                case 4:
+                  if (rgb_values[3].equalsIgnoreCase("bg")) {
+                    fg = false;
+                  }
+                  break;
+                default:
+                  throw new Exception("PARSE ERROR");
+              }
+              try {
+                Color color = Color.rgb(Integer.parseInt(rgb_values[0]),
+                        Integer.parseInt(rgb_values[1]),
+                        Integer.parseInt(rgb_values[2]));
+                if (fg) {
+                  format().fgColor(color);
+                } else {
+                  format().bgColor(color);
+                }
+              } catch (Exception ex) {
+                throw new Exception("PARSE ERROR");
+              }
+            } else {
+              boolean fg = true;
+              final String bg = "bg_";
+              if (c.toLowerCase().startsWith(bg)) {
+                fg = false;
+                c = c.substring(bg.length());
+              }
+              for (AnsiColor color : AnsiColor.values()) {
+                if (color.toString().equalsIgnoreCase(c)) {
+                  if (fg) {
+                    format().fg(color);
+                  } else {
+                    format().bg(color);
+                  }
+                  break;
+                }
+              }
+            }
+          }
+
+          a(text).format().reset();
+        } else if (value.substring(0, ERASE_N.length() + MANIPULATOR_SEP.length()).equals(FORMAT_N + MANIPULATOR_SEP)) {
+          //ERASE
+          throw new Exception("NOT SUPPORTED PARSE MANIPULATOR YET");
+        } else if (value.substring(0, CURSOR_N.length() + MANIPULATOR_SEP.length()).equals(FORMAT_N + MANIPULATOR_SEP)) {
+          //CURSOR
+          throw new Exception("NOT SUPPORTED PARSE MANIPULATOR YET");
+        } else {
+          throw new Exception("PARSE ERROR");
+        }
+      }
+    }
+    return this;
+  }
+
+  private int occurencesCounter(String value, String stringToFind) {
+    int idx = 0, count = 0;
+    while ((idx = value.indexOf(stringToFind, idx)) >= 0) {
+      count++;
+      idx += stringToFind.length();
+    }
+    return count;
   }
 
   private void appendFormat(Integer... format) {
