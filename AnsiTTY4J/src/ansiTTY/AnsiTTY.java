@@ -23,7 +23,7 @@ public class AnsiTTY {
 
   public final static int VERSION_MAJOR = 0;
   public final static int VERSION_MINOR = 3;
-  public final static int VERSION_REVISION = 1;
+  public final static int VERSION_REVISION = 2;
 
   private static void test() throws Exception {
     println(Ansi.ansi().resetTTY());
@@ -112,12 +112,19 @@ public class AnsiTTY {
     int k = 0;
     String s = "";
     if (args[0].equals("--version")) {
-      println(Ansi.ansi().format().boldOn().format().fg(AnsiColor.YELLOW).format().bg(AnsiColor.CYAN).a("AnsiTTY:").format().bg(AnsiColor.DEFAULT).a("a Unix-Like Console Text Formatter.").format().reset());
+      println(Ansi.ansi()
+              .format().boldOn()
+              .format().fg(AnsiColor.YELLOW).format().bg(AnsiColor.CYAN)
+              .a("AnsiTTY:")
+              .format().boldOff()
+              .format().fg(AnsiColor.RED).format().bg(AnsiColor.DEFAULT)
+              .a(" an Unix-Like Console Text Formatter Library for Java.")
+              .format().reset());
       println(Ansi.ansi().a("VERSION: v").a(version()));
       k = 1;
     }
     for (int i = k; i < args.length; i++) {
-      s += args[i];
+      s += args[i] + ((i < args.length - 1) ? " " : "");
     }
     println(Ansi.ansi().parse(s));
   }
