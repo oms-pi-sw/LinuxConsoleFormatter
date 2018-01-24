@@ -467,6 +467,16 @@ public class Ansi {
     }
 
     /**
+     * Sets the cursor position where subsequent text will begin.
+     *
+     * @return the Ansi with appended text.
+     */
+    public Ansi home() {
+      generateAnsiCode(AnsiEsc.SECOND_ESC_CHAR.getEsc(), AnsiCursor.HOME.getEnd(), null);
+      return ansiInstance;
+    }
+
+    /**
      * Identical to Cursor Home (<code>home(int, int)</code>).
      *
      * @param row the row.
@@ -559,13 +569,118 @@ public class Ansi {
   private static final String TEXT_SEP = " ";
 
   /**
-   * Parse the input string.
+   *
+   * @param value
+   * @return
+   * @throws Exception
+   */
+  public Ansi parse(String value) throws Exception {
+    if (occurencesCounter(value, START) != occurencesCounter(value, END)) {
+      throw new Exception("PARSE ERROR");
+    }
+    _parse(value);
+    return this;
+  }
+
+  private void _parse(String value) throws Exception {
+    try {
+      final String start_format = START + FORMAT_N + MANIPULATOR_SEP;
+
+      int start_index = value.indexOf(start_format);
+      int end_index = value.indexOf(END);
+      if (start_index < 0 && end_index < 0) {
+        //NO ANSI CODE
+        a(value);
+      } else if (start_index >= 0 && start_index < end_index) {
+        //FOUND A START @{f:
+        a(value.substring(0, start_index));
+
+        //SEPARATING COMMANDS
+        String command = value.substring(start_index + start_format.length());
+        int command_end = command.indexOf(TEXT_SEP);
+
+        String remaining = command.substring(command_end + TEXT_SEP.length());
+
+        command = command.substring(0, command_end);
+
+        //PARSING OF COMMANDS
+        String[] commands = command.split(CODE_SEP);
+        for (String c : commands) {
+          if (c.startsWith(RGB)) {
+            c = c.substring(RGB.length());
+            try {
+              c = c.substring(ARG_S.length(), c.length() - ARG_E.length());
+            } catch (Exception ex) {
+              throw new Exception("PARSE ERROR");
+            }
+            String[] rgb_values = c.split(RGB_SEP);
+            boolean fg = true;
+            switch (rgb_values.length) {
+              case 3:
+                break;
+              case 4:
+                if (rgb_values[3].equalsIgnoreCase("bg")) {
+                  fg = false;
+                }
+                break;
+              default:
+                throw new Exception("PARSE ERROR");
+            }
+            try {
+              Color color = Color.rgb(Integer.parseInt(rgb_values[0]),
+                      Integer.parseInt(rgb_values[1]),
+                      Integer.parseInt(rgb_values[2]));
+              if (fg) {
+                format().fgColor(color);
+              } else {
+                format().bgColor(color);
+              }
+            } catch (Exception ex) {
+              throw new Exception("PARSE ERROR");
+            }
+          } else {
+            boolean fg = true;
+            final String bg = "bg_";
+            if (c.toLowerCase().startsWith(bg)) {
+              fg = false;
+              c = c.substring(bg.length());
+            }
+            for (AnsiColor color : AnsiColor.values()) {
+              if (color.toString().equalsIgnoreCase(c)) {
+                if (fg) {
+                  format().fg(color);
+                } else {
+                  format().bg(color);
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        _parse(remaining);
+      } else if ((end_index >= 0 && start_index < 0) || (start_index > end_index)) {
+        //FOUND AN END }@
+        a(value.substring(0, end_index)).format().reset();
+        _parse(value.substring(end_index + END.length()));
+      } else if (end_index < 0 && start_index >= 0) {
+        throw new Exception("PARSE ERROR.");
+      } else {
+        throw new Exception("PARSE ERROR.");
+      }
+    } catch (Exception ex) {
+      throw ex;
+    }
+  }
+
+  /**
+   * Render the input string.
    *
    * @param value the string to parse.
    * @return the Ansi with appended text.
    * @throws java.lang.Exception the exception.
    */
-  public Ansi parse(String value) throws Exception {
+  public Ansi render(String value) throws Exception {
     if (occurencesCounter(value, START) != occurencesCounter(value, END)) {
       throw new Exception("PARSE ERROR");
     }

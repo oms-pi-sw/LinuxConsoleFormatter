@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import ansiTTY.ansi.Ansi;
 import static ansiTTY.ansi.Ansi.print;
 import static ansiTTY.ansi.Ansi.println;
+import ansiTTY.ansi.erase.EraseMode;
 import ansiTTY.ansi.format.AnsiAttribute;
 import ansiTTY.ansi.format.AnsiColor;
 import ansiTTY.ansi.format.AnsiColorType;
@@ -21,7 +22,9 @@ import ansiTTY.utils.Utility;
 public class LinuxConsoleFormatter {
 
   private static void test() throws Exception {
-    print(Ansi.ansi().resetTTY());
+    println(Ansi.ansi().resetTTY());
+    print(Ansi.ansi().erase().setErase(EraseMode.SCREEN_ALL));
+    print(Ansi.ansi().cursor().home());
 
     println(Ansi.ansi().format().fgColor(Color.ROSYBROWN).format().bgColor(Color.CYAN).format().attribute(AnsiAttribute.INTENSITY_BOLD).a("RESET TTY").format().reset());
 
@@ -29,7 +32,25 @@ public class LinuxConsoleFormatter {
 
     println(Ansi.ansi().format().extColor8bit(0, AnsiColorType.FOREGROUND).a("TEST 2 FORMAT").format().reset());
 
-    println(Ansi.ansi().parse("@{f:red FG_ROSSO}@ NON FORMATTATO @{f:rgb(255,0,0,bg) BG_ROSSO}@"));
+    String s = "prova @{f:green ciao}@ @{f:bg_yellow,blue wella!}@ wei! @{f:rgb(128;99;46;bg) @{f:rgb(122;23;57) rgb}@}@ @{f:yellow yellow @{f:bg_blue yellow,bg_blue}@}@";
+    println();
+    println(Ansi.ansi().format().attribute(AnsiAttribute.ITALIC).a(s).format().reset());
+    println(Ansi.ansi().parse(s));
+
+    s = "@{f:rgb(128;99;46;bg) @{f:rgb(122;23;57) rgb}@}@";
+    println();
+    println(Ansi.ansi().format().attribute(AnsiAttribute.ITALIC).a(s).format().reset());
+    println(Ansi.ansi().parse(s));
+
+    s = "prova @{f:green ciao}@ @{f:bg_yellow,blue wella!}@ wei! @{f:rgb(128;99;46;bg) @{f:rgb(122;23;57) rgb}@}@";
+    println();
+    println(Ansi.ansi().format().attribute(AnsiAttribute.ITALIC).a(s).format().reset());
+    println(Ansi.ansi().parse(s));
+
+    s = "no color @{f:red FG_ROSSO}@ NON FORMATTATO @{f:rgb(255;0;0;bg) BG_ROSSO}@";
+    println();
+    println(Ansi.ansi().format().attribute(AnsiAttribute.ITALIC).a(s).format().reset());
+    println(Ansi.ansi().parse(s));
 
     println();
 
