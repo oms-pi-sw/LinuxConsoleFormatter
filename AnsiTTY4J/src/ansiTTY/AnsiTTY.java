@@ -19,7 +19,11 @@ import ansiTTY.utils.Utility;
  *
  * @author root
  */
-public class LinuxConsoleFormatter {
+public class AnsiTTY {
+
+  public final static int VERSION_MAJOR = 0;
+  public final static int VERSION_MINOR = 3;
+  public final static int VERSION_REVISION = 1;
 
   private static void test() throws Exception {
     println(Ansi.ansi().resetTTY());
@@ -90,6 +94,10 @@ public class LinuxConsoleFormatter {
     Utility.endProgressBar(Ansi.ansi().format().bg(AnsiColor.RED).a("COMPLETED!").format().reset());
   }
 
+  public static String version() {
+    return VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_REVISION;
+  }
+
   /**
    * @param args the command line arguments
    * @throws Exception the generic exception.
@@ -99,9 +107,18 @@ public class LinuxConsoleFormatter {
 //    println(Ansi.ansi().parse("prova @{f:green ciao}@ @{f:bg_yellow,blue wella!}@ wei! @{f:rgb(128;99;46;bg),rgb(255;120;120) rgb}@"));
     if (args.length == 0) {
       test();
-    } else {
-      println(Ansi.ansi().parse(args[0]));
+      return;
     }
+    int k = 0;
+    String s = "";
+    if (args[0].equals("--version")) {
+      println(Ansi.ansi().format().boldOn().format().fg(AnsiColor.YELLOW).format().bg(AnsiColor.CYAN).a("AnsiTTY:").format().bg(AnsiColor.DEFAULT).a("a Unix-Like Console Text Formatter.").format().reset());
+      println(Ansi.ansi().a("VERSION: v").a(version()));
+      k = 1;
+    }
+    for (int i = k; i < args.length; i++) {
+      s += args[i];
+    }
+    println(Ansi.ansi().parse(s));
   }
-
 }
