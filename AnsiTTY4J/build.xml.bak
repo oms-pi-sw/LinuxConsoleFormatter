@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="One-Jar_Test" default="default" basedir=".">
-    <description>Builds, tests, and runs the project One-Jar_Test.</description>
+<project name="AnsiTTY4J" default="default" basedir=".">
+    <description>Builds, tests, and runs the project AnsiTTY4J.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 
@@ -58,7 +58,7 @@
 
     An example of overriding the target for project execution could look like this:
 
-        <target name="run" depends="One-Jar_Test-impl.jar">
+        <target name="run" depends="AnsiTTY4J-impl.jar">
             <exec dir="bin" executable="launcher.exe">
                 <arg file="${dist.jar}"/>
             </exec>
@@ -69,33 +69,5 @@
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file. 
 
-  -->
-    
-  <!-- Hook into One-Jar project -->
-  <available property="one-jar.dir" file="../one-jar/build.onejar.xml" value="../one-jar"/>
-  <!-- Will be ignored if available above -->
-  <property name="one-jar.dir" location="one-jar" />
-  <import file="${one-jar.dir}/build.onejar.xml"/>
-  
-  <target depends="jar0,one-jar0,-run-post-one-jar" description="Build JAR." name="jar"/>
-  
-  <target name="one-jar0">
-    <mkdir dir="dist/lib" />
-    <one-jar destfile="dist/AnsiTTY4J-pack.jar">
-      <manifest>
-        <!--<attribute name="Main-Class" value="one.jar_test.Boot"/>-->
-        <attribute name="One-Jar-Main-Class" value="ansiTTY.AnsiTTY"/>
-      </manifest>
-      <main>
-        <fileset dir="build/classes"/>
-      </main>
-      <lib>
-        <fileset dir="dist/lib" includes="*.jar" />
-      </lib>
-    </one-jar>
-  </target>
-
-  <target name="-run-post-one-jar">
-    <exec dir="." executable="./create_executable.sh"/>
-  </target>
+    -->
 </project>

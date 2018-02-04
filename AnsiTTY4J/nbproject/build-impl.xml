@@ -852,7 +852,7 @@ is divided into following sections:
         </macrodef>
     </target>
     <target name="-init-presetdef-jar">
-        <presetdef name="jar" uri="http://www.netbeans.org/ns/j2se-project/1">
+        <presetdef name="jar0" uri="http://www.netbeans.org/ns/j2se-project/1">
             <jar compress="${jar.compress}" index="${jar.index}" jarfile="${dist.jar}" manifestencoding="UTF-8">
                 <j2seproject1:fileset dir="${build.classes.dir}" excludes="${dist.archive.excludes}"/>
             </jar>
@@ -1030,7 +1030,7 @@ is divided into following sections:
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="init,compile,-pre-jar,-do-jar-without-libraries,-do-jar-with-libraries,-post-jar" name="-do-jar"/>
-    <target depends="init,compile,-pre-jar,-do-jar,-post-jar" description="Build JAR." name="jar"/>
+    <target depends="init,compile,-pre-jar,-do-jar,-post-jar" description="Build JAR." name="jar0"/>
     <!--
                 =================
                 EXECUTION SECTION
